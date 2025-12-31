@@ -1,4 +1,6 @@
-// All-in-one script
+// =====================
+// Variables
+// =====================
 let scene, camera, renderer, clock;
 let giftBox, boy, curtains, ring;
 let photoIndex = 0;
@@ -12,10 +14,11 @@ const music = new Howl({ src: ['assets/audio/background.mp3'], loop: true });
 
 let fireworksParticles = [];
 let confettiParticles = [];
-
 const container = document.getElementById('canvas-container');
 
-// ---------- Init Scene ----------
+// =====================
+// Initialize Scene
+// =====================
 function initScene(){
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -33,7 +36,9 @@ function initScene(){
   clock = new THREE.Clock();
 }
 
-// ---------- Load Models ----------
+// =====================
+// Load Models
+// =====================
 function loadModels(){
   const loader = new THREE.GLTFLoader();
 
@@ -56,7 +61,7 @@ function loadModels(){
     scene.add(curtains);
   });
 
-  // Ring
+  // Ring (simple torus)
   const geometry = new THREE.TorusGeometry(0.1,0.03,16,100);
   const material = new THREE.MeshStandardMaterial({ color:0xffff00, metalness:1, roughness:0.2 });
   ring = new THREE.Mesh(geometry, material);
@@ -65,7 +70,9 @@ function loadModels(){
   scene.add(ring);
 }
 
-// ---------- Countdown ----------
+// =====================
+// Countdown
+// =====================
 function startCountdown(){
   const countdownEl = document.getElementById('countdown');
   let timeLeft = 5;
@@ -82,7 +89,9 @@ function startCountdown(){
   },1000);
 }
 
-// ---------- Wish + Music ----------
+// =====================
+// Wish + Music
+// =====================
 function showWishMessage(){
   const wish = document.getElementById('wish-message');
   wish.classList.remove('hidden');
@@ -99,7 +108,9 @@ function showMusicBox(){
   });
 }
 
-// ---------- Gift Box ----------
+// =====================
+// Gift Box → Photos
+// =====================
 function showGiftBox(){
   gsap.to(giftBox.rotation,{y:Math.PI*2,duration:1,onComplete:showPhotos});
 }
@@ -112,7 +123,7 @@ function showPhotos(){
 
 function displayPhoto(index){
   const container = document.getElementById('photo-container');
-  container.innerHTML = `<img src="${photos[index]}" style="max-width:80%; border-radius:20px;">`;
+  container.innerHTML = `<img src="${photos[index]}">`;
   gsap.fromTo(container.firstChild,{scale:0},{scale:1,duration:1,onComplete:()=>{
     photoIndex++;
     if(photoIndex<photos.length){
@@ -123,7 +134,9 @@ function displayPhoto(index){
   }});
 }
 
-// ---------- Video ----------
+// =====================
+// Video
+// =====================
 function playVideo(){
   const video = document.getElementById('video-edit');
   video.src = videoSrc;
@@ -137,12 +150,16 @@ function playVideo(){
   };
 }
 
-// ---------- Curtains ----------
+// =====================
+// Curtains
+// =====================
 function showCurtains(){
   gsap.to(curtains.position,{y:1,duration:1,ease:"power2.inOut",onComplete:showProposal});
 }
 
-// ---------- Proposal ----------
+// =====================
+// Proposal
+// =====================
 function showProposal(){
   boy.visible = true;
   const proposal = document.getElementById('proposal-container');
@@ -150,23 +167,26 @@ function showProposal(){
   const yesBtn = document.getElementById('yes-btn');
   const noBtn = document.getElementById('no-btn');
   yesBtn.onclick = acceptProposal;
-  noBtn.onclick = ()=>{};
+  noBtn.onclick = ()=>{}; // keeps repeating until yes
 }
 
-// ---------- Accept Proposal ----------
+// =====================
+// Accept Proposal → Ring & Hug
+// =====================
 function acceptProposal(){
   document.getElementById('proposal-container').classList.add('hidden');
   gsap.to(ring.position,{x:-0.2,y:1.2,z:0,duration:2,ease:"power2.inOut",onComplete:hugAnimation});
 }
 
-// ---------- Hug + Confetti ----------
 function hugAnimation(){
   gsap.to(boy.rotation,{y:Math.PI/4,duration:1,ease:"power2.inOut"});
   triggerConfetti();
   setTimeout(showFinalMessage,2500);
 }
 
-// ---------- Fireworks ----------
+// =====================
+// Fireworks
+// =====================
 function triggerFireworks(){
   const texture = new THREE.TextureLoader().load('assets/textures/firework.png');
   for(let i=0;i<150;i++){
@@ -180,7 +200,9 @@ function triggerFireworks(){
   }
 }
 
-// ---------- Confetti ----------
+// =====================
+// Confetti / Flowers
+// =====================
 function triggerConfetti(){
   const texture = new THREE.TextureLoader().load('assets/textures/confetti.png');
   for(let i=0;i<100;i++){
@@ -194,14 +216,18 @@ function triggerConfetti(){
   }
 }
 
-// ---------- Final Message ----------
+// =====================
+// Final Message
+// =====================
 function showFinalMessage(){
   const final = document.getElementById('final-message');
   final.classList.remove('hidden');
   gsap.fromTo(final,{scale:0,opacity:0},{scale:1,opacity:1,duration:2,ease:"elastic.out(1,0.5)"});
 }
 
-// ---------- Animate ----------
+// =====================
+// Animate Loop
+// =====================
 function animate(){
   requestAnimationFrame(animate);
   fireworksParticles.forEach(p=>{
@@ -223,7 +249,9 @@ function animate(){
   renderer.render(scene,camera);
 }
 
-// ---------- Initialize ----------
+// =====================
+// Initialize Everything
+// =====================
 initScene();
 loadModels();
 startCountdown();
