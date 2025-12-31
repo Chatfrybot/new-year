@@ -31,3 +31,8 @@ button {
   background: #ff4081;
   color: #fff;
 }
+
+#photo-container img {
+  max-width: 80%;
+  border-radius: 20px;
+}
